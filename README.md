@@ -21,6 +21,14 @@ pip install rich
 - Download `segformer.b2.ade.pth` from [this link](https://drive.google.com/u/0/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh&export=download) and place it in `semantic-segmentation/`
 - For inference, run `python .\inference.py` in `semantic-segmentation/`
 
+- TODO:
+  - Save the region coordinates and mapping of each segment, along with its label
+  - Support training of model on sketched version of dataset
+  - Add utility codes for transforming training data to sketches
+
 ## Module 2: NLP
 
 ## Module 3: Colorization
+- TODO:
+  - Extract the inference from the `app/` API
+  - Allow command line / argument / config input of color pixel coordinates and RGB values
