@@ -2,6 +2,7 @@ import torch
 import random
 import numpy as np
 import torch
+import json
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import transforms as T
@@ -82,6 +83,11 @@ def draw_text(image: torch.Tensor, seg_map: torch.Tensor, labels: list, fontsize
 
     indices = seg_map.unique().tolist()
     classes = [labels[index] for index in indices]
+
+    # Save index-label mapping
+    mapping = {idx: cls for idx, cls in zip(indices, classes)}
+    with open("./result/label_mapping.json", "w") as json_file:
+        json.dump(mapping, json_file, indent=2)
 
     for idx, cls in zip(indices, classes):
         mask = seg_map == idx

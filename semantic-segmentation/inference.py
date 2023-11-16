@@ -60,6 +60,10 @@ class SemSeg:
         # get segmentation map (value being 0 to num_classes)
         seg_map = seg_map.softmax(dim=1).argmax(dim=1).cpu().to(int)
 
+        # Save segmentation map
+        save_dir = Path(cfg['SAVE_DIR']) / 'result'
+        torch.save(seg_map, f'{save_dir}/segmentation_map.pt')
+        
         # convert segmentation map to color map
         seg_image = self.palette[seg_map].squeeze()
         if overlay: 

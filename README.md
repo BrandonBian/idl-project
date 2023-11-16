@@ -22,7 +22,7 @@ pip install rich
 - For inference, run `python .\inference.py` in `semantic-segmentation/`
 
 - TODO:
-  - Save the region coordinates and mapping of each segment, along with its label
+  - [x] Save the region coordinates and mapping of each segment, along with its label
   - Support training of model on sketched version of dataset
   - Add utility codes for transforming training data to sketches
 
