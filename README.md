@@ -29,6 +29,8 @@ pip install rich
 ## Module 2: NLP
 
 ## Module 3: Colorization
+- Download `SketchColorizationModel.onnx` from [this link](https://github.com/rapidrabbit76/SketchColorization/releases) and place it in `colorization\`
+
 - TODO:
   - Extract the inference from the `app/` API
   - Allow command line / argument / config input of color pixel coordinates and RGB values
