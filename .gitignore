@@ -1,4 +1,9 @@
 *.pth
+<<<<<<< HEAD
 *__pycache__*
 
 semantic-segmentation/data/
+=======
+*.onnx
+*__pycache__*
+>>>>>>> 5d14db14ffd648efa1a531285529e3894ece16b6
