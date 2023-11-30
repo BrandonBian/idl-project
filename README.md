@@ -31,24 +31,27 @@ pip install gdown
 
 ## Module 1: Semantic Segmentation
 ### Preparation - Training Data
-- Full MIT Scene Parsing ADE 20K Benchmark (not used): http://sceneparsing.csail.mit.edu/
-- Our adapted/filtered room-specific dataset (used instead): [Google Drive](https://drive.google.com/file/d/1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8/view?usp=drive_link)
+- **Full MIT Scene Parsing ADE 20K Benchmark** (NOT used): http://sceneparsing.csail.mit.edu/
+- **Our adapted/filtered room-specific dataset** (used instead): [Google Drive](https://drive.google.com/file/d/1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8/view?usp=drive_link)
   - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8`
   - Unzip and place into `semantic-segmentation/data/`
 
 ### Preparation - Models
-- Download `segformer.b2.ade.pth` from [this link](https://drive.google.com/u/0/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh&export=download) and place it in `semantic-segmentation/`
-  - If using terminal, install gdown `pip install gdown`, and run `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
+- **Backbone model** (Mit-B2) for training and finetuning: [Google Drive](https://drive.google.com/file/d/1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl/view?usp=drive_link)
+  - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl`
+  - Place into `semantic-segmentation/models/`
+- **Pretrained model - original** which is provided by the authors and trained on the full original ADE-20K dataset: [Google Drive](https://drive.google.com/u/0/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh&export=download)
+  - Download using `gdown`: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
+  - Place into `semantic-segmentation/models`
+- **Pretrained model - rooms only**
+- **Pretrained model - room sketches only**
+
 
 ### Usage
-- For inference, run `python .\inference.py` in `semantic-segmentation/`
+- For **inference**, run `python ./inference.py` in `semantic-segmentation/`
 
 
 ## Module 2: NLP
 
 ## Module 3: Colorization
-- Download `SketchColorizationModel.onnx` from [this link](https://github.com/rapidrabbit76/SketchColorization/releases) and place it in `colorization\`
-
-- TODO:
-  - Extract the inference from the `app/` API
-  - Allow command line / argument / config input of color pixel coordinates and RGB values
+- Download `SketchColorizationModel.onnx` from [this link](https://github.com/rapidrabbit76/SketchColorization/releases) and place it in `colorization/`
