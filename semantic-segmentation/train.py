@@ -2,6 +2,7 @@ import torch
 import argparse
 import yaml
 import time
+import wandb
 import multiprocessing as mp
 from tabulate import tabulate
 from tqdm import tqdm
@@ -21,6 +22,16 @@ from semseg.optimizers import get_optimizer
 from semseg.utils.utils import fix_seeds, setup_cudnn, cleanup_ddp, setup_ddp
 from val import evaluate
 
+def wandb_init(name):
+    wandb.login(key="173e38ab5f2f2d96c260f57c989b4d068b64fb8a")
+
+    run = wandb.init(
+        name = name, ## Wandb creates random run names if you skip this field
+        reinit = True, ### Allows reinitalizing runs when you re-run this cell
+        project = "idl-project" ### Project should be created in your wandb account
+    )
+
+    return run
 
 def main(cfg, gpu, save_dir):
     start = time.time()
@@ -102,8 +113,18 @@ def main(cfg, gpu, save_dir):
                 torch.save(model.module.state_dict() if train_cfg['DDP'] else model.state_dict(), save_dir / f"{model_cfg['NAME']}_{model_cfg['BACKBONE']}_{dataset_cfg['NAME']}.pth")
             print(f"Current mIoU: {miou} Best mIoU: {best_mIoU}")
 
+        # Wandb logging
+        wandb.log(
+            {
+                "train_loss":train_loss, 
+                'val_mIoU':miou, 
+                "lr": optimizer.param_groups[0]['lr']
+            }
+        )
+
     writer.close()
     pbar.close()
+    run.finish()
     end = time.gmtime(time.time() - start)
 
     table = [
@@ -116,7 +137,10 @@ def main(cfg, gpu, save_dir):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', type=str, default='./config.yaml', help='Configuration file to use')
+    parser.add_argument('--name', type=str, help='Experiment name')
     args = parser.parse_args()
+
+    run = wandb_init(args.name)
 
     with open(args.cfg) as f:
         cfg = yaml.load(f, Loader=yaml.SafeLoader)

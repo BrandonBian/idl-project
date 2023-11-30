@@ -27,6 +27,7 @@ pip install rich
 pip install tensorboard
 pip install chardet
 pip install gdown
+pip install wandb
 ```
 
 ## Module 1: Semantic Segmentation
@@ -48,7 +49,8 @@ pip install gdown
 
 
 ### Usage
-- For **Training**, run `python ./train.py`
+- For **Training**, run `python ./train.py --name [experiment_name]`
+  - Use your own wandb API key in `train.py -> wandb.login()`
   - Make sure you have CUDA GPU available for Pytorch, otherwise it is extremely slow on CPU
   - Recommended to use AWS EC2 for training
   - Validation is performed after per training epoch, and the best model weights is saved

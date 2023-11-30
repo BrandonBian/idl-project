@@ -4,3 +4,5 @@
 semantic-segmentation/data/
 semantic-segmentation/models/
 semantic-segmentation/logs/
+semantic-segmentation/wandb/
+semantic-segmentation/output.log
