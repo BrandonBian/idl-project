@@ -48,8 +48,11 @@ pip install gdown
 
 
 ### Usage
+- For **Training**, run `python ./train.py`
+  - Make sure you have CUDA GPU available for Pytorch, otherwise it is extremely slow on CPU
+  - Recommended to use AWS EC2 for training
+  - Validation is performed after per training epoch, and the best model weights is saved
 - For **inference**, run `python ./inference.py` in `semantic-segmentation/`
-
 
 ## Module 2: NLP
 
