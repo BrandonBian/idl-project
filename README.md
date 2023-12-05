@@ -34,19 +34,19 @@ pip install wandb
 ### Preparation - Training Data
 - **Full MIT Scene Parsing ADE 20K Benchmark**: http://sceneparsing.csail.mit.edu/
 - **Our adapted/filtered room-specific dataset**: [Google Drive](https://drive.google.com/file/d/1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8/view?usp=drive_link)
-  - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8`
+  - Download: `gdown https://drive.google.com/u/2/uc?id=1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8`
   - Unzip and place into `semantic-segmentation/data/`
 - **Our filtered room-specific dataset, but converted to sketches**: [Google Drive](https://drive.google.com/file/d/1p3D5Y6X89SIOhO7ostJM6R6G1xKPLPxI/view?usp=drive_link)
-  - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1p3D5Y6X89SIOhO7ostJM6R6G1xKPLPxI`
+  - Download: `gdown https://drive.google.com/u/2/uc?id=1p3D5Y6X89SIOhO7ostJM6R6G1xKPLPxI`
   - Unzip and place into `semantic-segmentation/data/`
 
 ### Preparation - Models
 - **Backbone model** (Mit-B2) for training and finetuning: [Google Drive](https://drive.google.com/file/d/1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl/view?usp=drive_link)
-  - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl`
+  - Download: `gdown https://drive.google.com/u/2/uc?id=1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl`
   - Place into `semantic-segmentation/models/`
 - **Pretrained model - original** which is provided by the authors and trained on the full original ADE-20K dataset: [Google Drive](https://drive.google.com/u/0/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh&export=download)
-  - Download using `gdown`: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
-  - Place into `semantic-segmentation/models`
+  - Download: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
+  - Place into `semantic-segmentation/models/`
 - **Pretrained model - rooms only** which is trained using Mit-B2 backbone on our filtered room-specific dataset
   - **SegRooms_100Epochs_32mIoU**: 
     - [Google Drive](https://drive.google.com/file/d/1IQNBteYCB1R7kYUlO-uNDOFh2PR80KCP/view?usp=drive_link)

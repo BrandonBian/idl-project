@@ -68,7 +68,10 @@ class ADE20K(Dataset):
 
         image = io.read_image(img_path)
         label = io.read_image(lbl_path)
-        
+
+        if image.shape[0] == 1:
+            image = image.repeat(3, 1, 1)
+ 
         if self.transform:
             image, label = self.transform(image, label)
         return image, label.squeeze().long() - 1
