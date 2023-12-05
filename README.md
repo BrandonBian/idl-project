@@ -32,9 +32,12 @@ pip install wandb
 
 ## Module 1: Semantic Segmentation
 ### Preparation - Training Data
-- **Full MIT Scene Parsing ADE 20K Benchmark** (NOT used): http://sceneparsing.csail.mit.edu/
-- **Our adapted/filtered room-specific dataset** (used instead): [Google Drive](https://drive.google.com/file/d/1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8/view?usp=drive_link)
+- **Full MIT Scene Parsing ADE 20K Benchmark**: http://sceneparsing.csail.mit.edu/
+- **Our adapted/filtered room-specific dataset**: [Google Drive](https://drive.google.com/file/d/1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8/view?usp=drive_link)
   - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1-W-A9gDkVitq7lcGg2srm01DaB5nPsL8`
+  - Unzip and place into `semantic-segmentation/data/`
+- **Our filtered room-specific dataset, but converted to sketches**: [Google Drive](https://drive.google.com/file/d/1p3D5Y6X89SIOhO7ostJM6R6G1xKPLPxI/view?usp=drive_link)
+  - Download using `gdown`: `gdown https://drive.google.com/u/2/uc?id=1p3D5Y6X89SIOhO7ostJM6R6G1xKPLPxI`
   - Unzip and place into `semantic-segmentation/data/`
 
 ### Preparation - Models
@@ -44,7 +47,13 @@ pip install wandb
 - **Pretrained model - original** which is provided by the authors and trained on the full original ADE-20K dataset: [Google Drive](https://drive.google.com/u/0/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh&export=download)
   - Download using `gdown`: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
   - Place into `semantic-segmentation/models`
-- **Pretrained model - rooms only**
+- **Pretrained model - rooms only** which is trained using Mit-B2 backbone on our filtered room-specific dataset
+  - **SegRooms_100Epochs_32mIoU**: 
+    - [Google Drive](https://drive.google.com/file/d/1IQNBteYCB1R7kYUlO-uNDOFh2PR80KCP/view?usp=drive_link)
+    - `gdown https://drive.google.com/u/2/uc?id=1IQNBteYCB1R7kYUlO-uNDOFh2PR80KCP`
+  - **SegRooms_250Epochs_29mIoU**:
+    - [Google Drive](https://drive.google.com/file/d/1rrt5m3GeWLyvVhkQ2ibXzqQhs5kOQAJT/view?usp=drive_link)
+    - `gdown https://drive.google.com/u/2/uc?id=1rrt5m3GeWLyvVhkQ2ibXzqQhs5kOQAJT`
 - **Pretrained model - room sketches only**
 
 
