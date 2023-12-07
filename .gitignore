@@ -2,8 +2,8 @@
 *.pth
 *__pycache__*
 
-semantic-segmentation/data/
-semantic-segmentation/models/
-semantic-segmentation/logs/
-semantic-segmentation/wandb/
-semantic-segmentation/output.log
+segmentation/data/
+segmentation/models/
+segmentation/logs/
+segmentation/wandb/
+segmentation/output.log
