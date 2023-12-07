@@ -10,11 +10,9 @@ Group Project for IDL
 conda create -n idl-project python=3.6 -y
 conda activate idl-project
 
-# Find your version from: https://pytorch.org/get-started/previous-versions/
-# NOTE: my PC has CUDA == 11.3, check yours using "nvcc --version"
-# NOTE: using Pytorch 1.9 (pretty old version) for compatibility with Python 3.6
-# NOTE: after installing Pytorch, make sure "torch.cuda.is_available() == True"
-conda install pytorch==1.9.0 torchvision==0.10.0 torchaudio==0.9.0 cudatoolkit=11.3 -c pytorch -c conda-forge
+# Since there is no suitable pytorch for Python 3.6, 
+# let's just use CPU version of Pytorch for inference
+pip install torch
 
 pip install pyyaml
 pip install torchvision
@@ -56,7 +54,6 @@ pip install wandb
     - `gdown https://drive.google.com/u/2/uc?id=1rrt5m3GeWLyvVhkQ2ibXzqQhs5kOQAJT`
 - **Pretrained model - room sketches only**
 
-
 ### Usage
 - For **Training**, run `python ./train.py --name [experiment_name]`
   - Use your own wandb API key in `train.py -> wandb.login()`
@@ -65,7 +62,8 @@ pip install wandb
   - Validation is performed after per training epoch, and the best model weights is saved
 - For **inference**, run `python ./inference.py` in `semantic-segmentation/`
 
-## Module 2: NLP
-
-## Module 3: Colorization
-- Download `SketchColorizationModel.onnx` from [this link](https://github.com/rapidrabbit76/SketchColorization/releases) and place it in `colorization/`
+## Module 2: Colorization
+- Preparation - Models
+  - Pretrained model by the authors on **anime-specific** images: Download `SketchColorizationModel.onnx` from [Github Release](https://github.com/rapidrabbit76/SketchColorization/releases)
+    - Download: `wget https://github.com/rapidrabbit76/SketchColorization/releases/download/1.0.0/SketchColorizationModel.onnx`
+    - Place into `colorization/`
