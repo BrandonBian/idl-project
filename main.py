@@ -7,8 +7,122 @@ import torch.nn.functional as F
 from pathlib import Path
 from PIL import Image, ImageDraw
 from utils import SemSeg, console, InferenceHandler, predict
+import time
+import ast
+import openai
+import textwrap
+
+class OpenAIEngine():
+  def __init__(self, model_name):
+    self.model_name = model_name
+
+  def score(self, text):
+    """Tokenizes and scores a piece of text.
+
+    This only works for the OpenAI models which support the legacy `Completion`
+    API.
+
+    The score is log-likelihood. A higher score means a token was more
+    likely according to the model.
+
+    Returns a list of tokens and a list of scores.
+    """
+    response = openai.Completion.create(
+        engine=self.model_name,
+        prompt=text,
+        max_tokens=0,
+        logprobs=1,
+        echo=True)
+
+    tokens = response["choices"][0]["logprobs"]["tokens"]
+    logprobs = response["choices"][0]["logprobs"]["token_logprobs"]
+    if logprobs and logprobs[0] is None:
+      # GPT-3 API does not return logprob of the first token
+      logprobs[0] = 0.0
+    return tokens, logprobs
+
+  def perplexity(self, text):
+    """Compute the perplexity of the provided text."""
+    completion = openai.Completion.create(
+        model=self.model_name,
+        prompt=text,
+        logprobs=0,
+        max_tokens=0,
+        temperature=1.0,
+        echo=True)
+    token_logprobs = completion['choices'][0]['logprobs']['token_logprobs']
+    nll = np.mean([i for i in token_logprobs if i is not None])
+    ppl = np.exp(-nll)
+    return ppl
+
+  def generate(self,
+               prompt,
+               top_p=1.0,
+               num_tokens=32,
+               num_samples=1,
+               frequency_penalty=0.0,
+              presence_penalty=0.0):
+    """Generates text given the provided prompt text.
+
+    This only works for the OpenAI models which support the legacy `Completion`
+    API.
+
+    If num_samples is 1, a single generated string is returned.
+    If num_samples > 1, a list of num_samples generated strings is returned.
+    """
+    response = openai.completions.create(
+      model=self.model_name,
+      prompt=prompt,
+      temperature=1.0,
+      max_tokens=num_tokens,
+      top_p=top_p,
+      n=num_samples,
+      frequency_penalty=frequency_penalty,
+      presence_penalty=presence_penalty,
+      logprobs=1,
+    )
+    # outputs = [r["text"] for r in response["choices"]]
+    # return outputs[0] if num_samples == 1 else outputs
+    return response.choices[0].text
+
+
+  def chat_generate(self,
+                    previous_messages,
+                    top_p=1.0,
+                    num_tokens=32,
+                    num_samples=1,
+                    frequency_penalty=0.0,
+                    presence_penalty=0.0):
+    response = openai.ChatCompletion.create(
+      model=self.model_name,
+      messages=previous_messages,
+      temperature=1.0,
+      max_tokens=num_tokens,
+      top_p=top_p,
+      frequency_penalty=frequency_penalty,
+      presence_penalty=presence_penalty,
+      n=num_samples,
+    )
+    return response
+
+def transform_user_input(user_input):
+    # user_input = 'I want the door to be green, the painting to be pink, the lamp to be yellow, the sconce to be navy-blue, the sofa to be blue, the coffee table to be green, and the book to be orange'
+    prompt = f"The user input is {user_input}. Correctly identify the objects and its corresponding colors and reformat the input into a json string where the key is the object and the value is the color."
+    json_str = engine.generate(prompt, num_tokens=512, num_samples=1, top_p=0.6)
+    res = json.loads(json_str)
+    return res
+def transform_color_rgb(color):
+    prompt = f"convert color {color} to rgb value. return the rgb value as a tuple only"
+    str_rgb = engine.generate(prompt, num_tokens=512, num_samples=1, top_p=0.6)
+    rgb_tuple = ast.literal_eval(str_rgb.strip())
+    return rgb_tuple
 
 if __name__ == "__main__":
+    OPENAI_SECRET_KEY = "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"
+    openai.api_key = OPENAI_SECRET_KEY
+    MODEL_NAME = "text-davinci-002" #"davinci"
+    engine = OpenAIEngine(MODEL_NAME)
+    
     print("-------------------------------------------")
     print("--- Step 1: Input your sketch directory ---")
     print("-------------------------------------------")
@@ -44,27 +158,80 @@ if __name__ == "__main__":
     print("We detected the following objects:", objects)
 
     # TODO: NLP's final result should be something like the following
-    color_mapping = {
-        0: ("wall", (200, 200, 200)),     # Gray wall
-        3: ("floor", (150, 100, 50)),     # Brown wooden floor
-        5: ("ceiling", (255, 255, 255)),  # White ceiling
-        8: ("windowpane", (135, 206, 235)), # Light Blue windowpane
-        14: ("door", (160, 82, 45)),      # Brown wooden door
-        15: ("table", (139, 69, 19)),     # Dark Brown table
-        18: ("curtain", (220, 20, 60)),   # Red curtain
-        22: ("painting", (233, 150, 122)), # Light Red painting
-        23: ("sofa", (178, 34, 34)),      # Dark Red sofa
-        24: ("shelf", (210, 105, 30)),    # Brown shelf
-        35: ("wardrobe", (128, 0, 0)),    # Maroon wardrobe
-        36: ("lamp", (255, 215, 0)),      # Gold lamp
-        39: ("cushion", (255, 160, 122)), # Light Coral cushion
-        64: ("coffee table", (139, 69, 19)), # Brown coffee table
-        67: ("book", (0, 0, 255)),        # Blue book
-        69: ("bench", (85, 107, 47)),     # Dark Olive Green bench
-        132: ("sculpture", (192, 192, 192)), # Silver sculpture
-        134: ("sconce", (218, 165, 32)),  # Golden Rod sconce
-        135: ("vase", (123, 104, 238))    # Medium Slate Blue vase
+    
+    objects = list(label_mapping.values())
+    print("We detected the following objects:", objects)
+    user_input = input("Please describe your colorization requirements of the detect objects: ")
+    final_res = transform_user_input(user_input)
+    res_objects = final_res.keys()
+    diff1 = [item for item in objects if item not in res_objects]
+    while len(diff1)>0:
+        diff_string = ', '.join(diff1)
+        user_input = input(f"Seems like you forget to colorize {diff_string}. Please describe your colorization requirement of these objects: ")
+        res = transform_user_input(user_input)
+        final_res.update(res)
+        res_objects = final_res.keys()
+        diff1 = [item for item in objects if item not in res_objects]
+    
+    color_to_rgb = {
+        "red": (255, 0, 0),
+        "green": (0, 128, 0),
+        "blue": (0, 0, 255),
+        "yellow": (255, 255, 0),
+        "orange": (255, 165, 0),
+        "purple": (128, 0, 128),
+        "pink": (255, 192, 203),
+        "brown": (165, 42, 42),
+        "black": (0, 0, 0),
+        "white": (255, 255, 255),
+        "gray": (128, 128, 128),
+        "cyan": (0, 255, 255),
+        "magenta": (255, 0, 255),
+        "lime": (0, 255, 0),
+        "maroon": (128, 0, 0),
+        "olive": (128, 128, 0),
+        "navy": (0, 0, 128),
+        "teal": (0, 128, 128),
+        "silver": (192, 192, 192),
+        "gold": (255, 215, 0)
     }
+
+    # TODO: NLP's final result should be something like the following
+    color_mapping = {}
+    for idx,obj in label_mapping.items():
+        color = final_res[obj]
+        if color in color_to_rgb.keys():
+            color_rgb = color_to_rgb[color]
+        else:
+            color_rgb = transform_color_rgb(color)
+            color_to_rgb[color] = color_rgb
+            time.sleep(5)
+        color_mapping[int(idx)] = (obj,color_rgb)
+        
+        
+        
+    # print(color_mapping)
+    # color_mapping = {
+    #     0: ("wall", (200, 200, 200)),     # Gray wall
+    #     3: ("floor", (150, 100, 50)),     # Brown wooden floor
+    #     5: ("ceiling", (255, 255, 255)),  # White ceiling
+    #     8: ("windowpane", (135, 206, 235)), # Light Blue windowpane
+    #     14: ("door", (160, 82, 45)),      # Brown wooden door
+    #     15: ("table", (139, 69, 19)),     # Dark Brown table
+    #     18: ("curtain", (220, 20, 60)),   # Red curtain
+    #     22: ("painting", (233, 150, 122)), # Light Red painting
+    #     23: ("sofa", (178, 34, 34)),      # Dark Red sofa
+    #     24: ("shelf", (210, 105, 30)),    # Brown shelf
+    #     35: ("wardrobe", (128, 0, 0)),    # Maroon wardrobe
+    #     36: ("lamp", (255, 215, 0)),      # Gold lamp
+    #     39: ("cushion", (255, 160, 122)), # Light Coral cushion
+    #     64: ("coffee table", (139, 69, 19)), # Brown coffee table
+    #     67: ("book", (0, 0, 255)),        # Blue book
+    #     69: ("bench", (85, 107, 47)),     # Dark Olive Green bench
+    #     132: ("sculpture", (192, 192, 192)), # Silver sculpture
+    #     134: ("sconce", (218, 165, 32)),  # Golden Rod sconce
+    #     135: ("vase", (123, 104, 238))    # Medium Slate Blue vase
+    # }
 
     print("\n----------------------------")
     print("--- Step 4: Colorization ---")

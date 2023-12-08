@@ -2,12 +2,12 @@
 Group Project for IDL
 
 ## Environment Set-up (tested on Windows 10)
-- python >= 3.6
+- python >= 3.7
 - torch >= 1.8.1
 - torchvision >= 0.9.1
 ```bash
-# Create environment with Python 3.6 to be compatible with the colorization model
-conda create -n idl-project python=3.6 -y
+# Create environment with Python 3.7 to be compatible with the colorization model
+conda create -n idl-project python=3.7 -y
 conda activate idl-project
 
 # Since there is no suitable pytorch for Python 3.6, 
@@ -28,6 +28,7 @@ pip install gdown
 pip install wandb
 pip install onnxruntime
 pip install pyqt5
+pip install openai==1.3.7
 ```
 
 ## Usage
