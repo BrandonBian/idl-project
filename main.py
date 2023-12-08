@@ -1,4 +1,5 @@
 import yaml
+import json
 from pathlib import Path
 from utils import SemSeg, console
 
@@ -26,4 +27,13 @@ if __name__ == "__main__":
         segmap = semseg.predict(image_dir, cfg['TEST']['OVERLAY'])
         segmap.save(save_dir / f"semantic_segmentation.png")
 
+    print("\n--------------------------------------")
+    print("--- Step 3: User requirement parsing ---")
+    print("----------------------------------------")
 
+    with open("./result/label_mapping.json", 'r') as file:
+        label_mapping = json.load(file)
+
+    # TODO: add NLP
+    objects = list(label_mapping.values())
+    print("We detected the following objects:", objects)
