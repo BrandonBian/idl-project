@@ -1,5 +1,6 @@
 *.zip
 *.pth
+*.onnx
 *__pycache__*
 
 segmentation/data/
