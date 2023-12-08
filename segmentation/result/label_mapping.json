@@ -1,0 +1,21 @@
+{
+  "0": "wall",
+  "3": "floor",
+  "5": "ceiling",
+  "8": "windowpane",
+  "14": "door",
+  "15": "table",
+  "18": "curtain",
+  "22": "painting",
+  "23": "sofa",
+  "24": "shelf",
+  "35": "wardrobe",
+  "36": "lamp",
+  "39": "cushion",
+  "64": "coffee table",
+  "67": "book",
+  "69": "bench",
+  "132": "sculpture",
+  "134": "sconce",
+  "135": "vase"
+}
