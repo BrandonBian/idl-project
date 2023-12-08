@@ -28,6 +28,13 @@ pip install gdown
 pip install wandb
 ```
 
+## Usage
+- **Step 1**: set up and activate the conda environment following instructions above
+- **Step 2**: create `segmentation/models/` directory, enter it, and run the following
+  - Backbone model: `gdown https://drive.google.com/u/2/uc?id=1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl`
+  - Pretrained ADE20K model: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
+- **Step 3**: run `python main.py` and follow the instructions. Results will be saved in `result/`
+
 ## Module 1: Semantic Segmentation
 ### Preparation - Training Data
 - **Full MIT Scene Parsing ADE 20K Benchmark**: http://sceneparsing.csail.mit.edu/
