@@ -33,7 +33,8 @@ pip install wandb
 - **Step 2**: create `segmentation/models/` directory, enter it, and run the following
   - Backbone model: `gdown https://drive.google.com/u/2/uc?id=1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl`
   - Pretrained ADE20K model: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
-- **Step 3**: run `python main.py` and follow the instructions. Results will be saved in `result/`
+- **Step 3**: enter `colorization`, and run `gdown https://drive.google.com/u/2/uc?id=1G7nN4PL48TB6aJjCn7F6tJSM_d7pZ3_4` to get a pre-trained model
+- **Step 4**: run `python main.py` and follow the instructions. Results will be saved in `result/`
 
 ## Module 1: Semantic Segmentation
 ### Preparation - Training Data
@@ -71,6 +72,6 @@ pip install wandb
 
 ## Module 2: Colorization
 - Preparation - Models
-  - Pretrained model by the authors on **anime-specific** images: Download `SketchColorizationModel.onnx` from [Github Release](https://github.com/rapidrabbit76/SketchColorization/releases)
-    - Download: `wget https://github.com/rapidrabbit76/SketchColorization/releases/download/1.0.0/SketchColorizationModel.onnx`
+  - Pretrained model by the authors on **anime-specific** images: Download `SketchColorizationModel.onnx` from [Github Release](https://github.com/rapidrabbit76/SketchColorization/releases), or use the following command to download from our Google Drive
+    - Download: `gdown https://drive.google.com/u/2/uc?id=1G7nN4PL48TB6aJjCn7F6tJSM_d7pZ3_4`
     - Place into `colorization/`
