@@ -8,14 +8,15 @@ from pathlib import Path
 from torchvision import io
 from torchvision import transforms as T
 
-from segmentation.semseg.models import *
-from segmentation.semseg.datasets import *
-from segmentation.semseg.utils.utils import timer
-from segmentation.semseg.utils.visualize import draw_text
-
 from rich.console import Console
 console = Console()
 
+#############################
+# - Semantic Segmentation - #
+#############################
+from segmentation.semseg.models import *
+from segmentation.semseg.datasets import *
+from segmentation.semseg.utils.visualize import draw_text
 
 class SemSeg:
     def __init__(self, cfg) -> None:
@@ -42,13 +43,11 @@ class SemSeg:
 
     def preprocess(self, image: Tensor) -> Tensor:
         H, W = image.shape[1:]
-        console.print(f"Original Image Size > [red]{H}x{W}[/red]")
         # scale the short side of image to target size
         scale_factor = self.size[0] / min(H, W)
         nH, nW = round(H*scale_factor), round(W*scale_factor)
         # make it divisible by model stride
         nH, nW = int(math.ceil(nH / 32)) * 32, int(math.ceil(nW / 32)) * 32
-        console.print(f"Inference Image Size > [red]{nH}x{nW}[/red]")
         # resize the image
         image = T.Resize((nH, nW))(image)
         # divide by 255, norm and add batch dim
@@ -62,7 +61,7 @@ class SemSeg:
         seg_map = seg_map.softmax(dim=1).argmax(dim=1).cpu().to(int)
 
         # Save segmentation map
-        save_dir = Path(cfg['SAVE_DIR']) / 'result'
+        save_dir = Path('./result')
         torch.save(seg_map, f'{save_dir}/segmentation_map.pt')
         
         # convert segmentation map to color map
@@ -74,7 +73,6 @@ class SemSeg:
         return image
 
     @torch.inference_mode()
-    @timer
     def model_forward(self, img: Tensor) -> Tensor:
         return self.model(img)
         
