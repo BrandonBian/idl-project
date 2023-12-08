@@ -26,6 +26,8 @@ pip install tensorboard
 pip install chardet
 pip install gdown
 pip install wandb
+pip install onnxruntime
+pip install pyqt5
 ```
 
 ## Usage

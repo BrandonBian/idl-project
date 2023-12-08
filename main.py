@@ -1,7 +1,7 @@
 import yaml
 import json
 from pathlib import Path
-from utils import SemSeg, console
+from utils import SemSeg, console, InferenceHandler
 
 if __name__ == "__main__":
     print("-------------------------------------------")
@@ -66,4 +66,4 @@ if __name__ == "__main__":
     print("----------------------------")
 
     # TODO
-    
+    inference_handler = InferenceHandler()
