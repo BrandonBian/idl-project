@@ -7,3 +7,5 @@ segmentation/models/
 segmentation/logs/
 segmentation/wandb/
 segmentation/output.log
+segmentation/result/
+result/

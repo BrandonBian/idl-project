@@ -1,0 +1,17 @@
+DEVICE: cpu # device used for training and evaluation (cpu, cuda, cuda0, cuda1, ...)
+
+MODEL:
+  NAME: SegFormer # name of the model you are using
+  BACKBONE: MiT-B2 # model variant
+  PRETRAINED: "./segmentation/models/mit_b2.pth" # backbone model's weight
+
+DATASET:
+  NAME: ADE20K # dataset name to be trained with (camvid, cityscapes, ade20k)
+  ROOT: "./data/ade20k_rooms_only" # dataset root path
+  IGNORE_LABEL: 0
+
+TEST:
+  MODEL_PATH: "./segmentation/models/segformer.b2.ade.pth" # trained model file path
+  FILE: "../input.png" # filename or foldername
+  IMAGE_SIZE: [512, 512] # inference image size in (h, w)
+  OVERLAY: true # save the overlay result (image_alpha+label_alpha)
