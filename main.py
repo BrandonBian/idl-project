@@ -1,6 +1,9 @@
 import yaml
 import json
+import numpy as np
 import torch
+import torch.nn.functional as F
+
 from pathlib import Path
 from PIL import Image, ImageDraw
 from utils import SemSeg, console, InferenceHandler, predict
@@ -29,7 +32,7 @@ if __name__ == "__main__":
         segmap = semseg.predict(image_dir, cfg['TEST']['OVERLAY'])
         segmap.save(save_dir / f"semantic_segmentation.png")
 
-    print("\n--------------------------------------")
+    print("\n----------------------------------------")
     print("--- Step 3: User requirement parsing ---")
     print("----------------------------------------")
 
@@ -67,48 +70,74 @@ if __name__ == "__main__":
     print("--- Step 4: Colorization ---")
     print("----------------------------")
 
-    # Load input image
-    inference_handler = InferenceHandler()
+    with console.status("[bright_green]Processing..."):
+        for sampling_points in [5, 10, 15, 20, 25, 30]:
+            for stroke_size in [2, 4, 6, 8]:
+                print(f"Generating candidate with configuration: sampling points = {sampling_points}, stroke size = {stroke_size}")
 
-    img = Image.open(image_dir)
-    if 'png' in image_dir.lower():
-        img = img.convert('LA')
-    
-    line = img.copy()
+                # Load input image
+                inference_handler = InferenceHandler()
 
-    # Load pixel-level semantic segmentation predictions
-    segmentation_map = torch.load('./result/segmentation_map.pt')
-    segmentation_map = torch.squeeze(segmentation_map).transpose(0, 1)
-    assert segmentation_map.shape == img.size
+                img = Image.open(image_dir)
+                if 'png' in image_dir.lower():
+                    img = img.convert('LA')
+                
+                line = img.copy()
 
-    # Resize
-    width = float(img.size[0])
-    height = float(img.size[1])
+                # Load pixel-level semantic segmentation predictions
+                segmentation_map = torch.load('./result/segmentation_map.pt')
+                segmentation_map = torch.squeeze(segmentation_map).transpose(0, 1)
+                assert segmentation_map.shape == img.size
 
-    if width > height:
-        rate = width / height
-        new_height = 512
-        new_width = int(512 * rate)
-    else:
-        rate = height / width
-        new_width = 512
-        new_height = int(rate * 512)
+                # Create a hint map of translucent canvas, and add color points based on user requirements
+                hint_map = Image.new("RGBA", (img.size), (0, 0, 0, 0))
+                draw = ImageDraw.Draw(hint_map)
 
-    print(f"Resize: ({width}, {height}) -> ({new_width}, {new_height})")
-    img = img.resize((new_width, new_height), Image.BICUBIC)
+                # Place color points on hint map
+                unique_labels = color_mapping.keys()
+                selected_coordinates = {}
 
-    x = int(input("Coordinate x: "))
-    y = int(input("Coordinate y: "))
-    # TODO: define color
-    color = (255, 0, 0)
-    width = 4
+                max_area = max(len(np.column_stack(np.where(segmentation_map == label))) for label in unique_labels)
 
-    # Construct a hint_map of translucent canvas, add the color points
-    hint_map = Image.new("RGBA", (new_width, new_height), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(hint_map)
-    draw.line([(x, y), (x + width, y)], fill=color, width=width)
-    hint_map.show()
-    
-    # Colorization with model
-    img = predict(img, hint_map, inference_handler)
-    img.show()
+                for label in unique_labels:
+                    # Get coordinates of all pixels with current label
+                    coords = np.column_stack(np.where(segmentation_map == label))
+
+                    # Scale the number of sampled color points based on the area
+                    # NOTE: larger areas will have more color points, minimum points hardcoded as 3
+                    scaled_points = max(3, int(sampling_points * (len(coords) / max_area)))
+
+                    # Scale the coloring stroke
+                    # NOTE: smaller areas will have larger stroke size, minimum stroke hardcoded as 3
+                    # NOTE: not used for now
+                    scaled_stroke = max(3, int(stroke_size * (1 - (len(coords) / max_area))))
+
+                    # Randomly select [scaled_points] coordinates
+                    if coords.shape[0] > scaled_points:
+                        indices = np.random.choice(coords.shape[0], scaled_points, replace=False)
+                    else:
+                        indices = np.random.choice(coords.shape[0], scaled_points, replace=True)  # Allow repeats if less than 5
+
+                    selected_coordinates[label] = coords[indices]
+                
+                for label, coordinates in selected_coordinates.items():
+                    for x, y in coordinates:
+                        # Fetch RGB from color mapping
+                        rgb = color_mapping[int(segmentation_map[x][y])][1]
+                        # Color the coordinate on hint map
+                        draw.line([(x, y), (x + stroke_size, y)], fill=rgb, width=stroke_size)
+                
+                # Colorization with model
+                assert img.size == hint_map.size, f"(Img Size = {img.size}) != (Hint Map Size = {hint_map.size})"
+                img = predict(img, hint_map, inference_handler)
+                
+                # Save results
+                save_dir = Path("./result/candidates")
+                save_dir.mkdir(exist_ok=True)
+
+                hint_map.save(f"{save_dir}/hintmap_sampling{sampling_points}_stroke{stroke_size}.png")
+                img.save(f"{save_dir}/result_sampling{sampling_points}_stroke{stroke_size}.png")
+
+    print("\n--------------")
+    print("--- Done! ---")
+    print("-------------")
