@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import transforms as T
 from torchvision.utils import make_grid
-from semseg.augmentations import Compose, Normalize, RandomResizedCrop
+from ..augmentations import Compose, Normalize, RandomResizedCrop
 from PIL import Image, ImageDraw, ImageFont
 
 

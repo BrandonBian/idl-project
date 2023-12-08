@@ -1,8 +1,8 @@
 import torch
 from torch import Tensor
 from torch.nn import functional as F
-from semseg.models.base import BaseModel
-from semseg.models.heads import SFHead
+from .base import BaseModel
+from .heads import SFHead
 
 
 class SFNet(BaseModel):

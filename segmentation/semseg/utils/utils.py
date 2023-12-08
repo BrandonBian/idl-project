@@ -11,7 +11,7 @@ from torch.autograd import profiler
 from typing import Union
 from torch import distributed as dist
 from tabulate import tabulate
-from semseg import models
+from .. import models
 
 
 def fix_seeds(seed: int = 3407) -> None:

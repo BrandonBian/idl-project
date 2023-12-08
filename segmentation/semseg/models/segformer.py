@@ -1,8 +1,8 @@
 import torch
 from torch import Tensor
 from torch.nn import functional as F
-from semseg.models.base import BaseModel
-from semseg.models.heads import SegFormerHead
+from .base import BaseModel
+from .heads import SegFormerHead
 
 
 class SegFormer(BaseModel):

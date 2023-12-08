@@ -1,8 +1,8 @@
 import torch
 from torch import Tensor
 from torch.nn import functional as F
-from semseg.models.base import BaseModel
-from semseg.models.heads import UPerHead
+from .base import BaseModel
+from .heads import UPerHead
 
 
 class CustomVIT(BaseModel):

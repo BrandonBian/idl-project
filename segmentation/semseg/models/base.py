@@ -1,8 +1,8 @@
 import torch
 import math
 from torch import nn
-from semseg.models.backbones import *
-from semseg.models.layers import trunc_normal_
+from .backbones import *
+from .layers import trunc_normal_
 
 
 class BaseModel(nn.Module):

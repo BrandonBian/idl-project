@@ -2,8 +2,8 @@ import torch
 import math
 from torch import nn, Tensor
 from torch.nn import functional as F
-from semseg.models.backbones import *
-from semseg.models.layers import ConvModule
+from .backbones import *
+from .layers import ConvModule
 
 
 class SpatialPath(nn.Module):
