@@ -77,7 +77,7 @@ def generate_palette(num_classes, background: bool = False):
 
 def draw_text(image: torch.Tensor, seg_map: torch.Tensor, labels: list, fontsize: int = 15):
     image = image.to(torch.uint8)
-    font = ImageFont.truetype("semseg/Helvetica.ttf", fontsize)
+    font = ImageFont.truetype("./Helvetica.ttf", fontsize)
     pil_image = Image.fromarray(image.numpy())
     draw = ImageDraw.Draw(pil_image)
 
