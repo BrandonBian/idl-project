@@ -32,9 +32,7 @@ pip install pyqt5
 
 ## Usage
 - **Step 1**: set up and activate the conda environment following instructions above
-- **Step 2**: create `segmentation/models/` directory, enter it, and run the following
-  - Backbone model: `gdown https://drive.google.com/u/2/uc?id=1Ju_8VWh8aG7mKrvfshRCfwNkk1qYIEvl`
-  - Pretrained ADE20K model: `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh`
+- **Step 2**: create `segmentation/models/` directory, enter it, and run `gdown https://drive.google.com/u/1/uc?id=1AcgEK5aWMJzpe8tsfauqhragR0nBHyPh` to get the pre-trained model on full ADE20K dataset
 - **Step 3**: enter `colorization`, and run `gdown https://drive.google.com/u/2/uc?id=1G7nN4PL48TB6aJjCn7F6tJSM_d7pZ3_4` to get a pre-trained model
 - **Step 4**: run `python main.py` and follow the instructions. Results will be saved in `result/`
 
