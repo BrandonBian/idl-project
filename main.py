@@ -1,7 +1,9 @@
 import yaml
 import json
+import torch
 from pathlib import Path
-from utils import SemSeg, console, InferenceHandler
+from PIL import Image, ImageDraw
+from utils import SemSeg, console, InferenceHandler, predict
 
 if __name__ == "__main__":
     print("-------------------------------------------")
@@ -65,5 +67,48 @@ if __name__ == "__main__":
     print("--- Step 4: Colorization ---")
     print("----------------------------")
 
-    # TODO
+    # Load input image
     inference_handler = InferenceHandler()
+
+    img = Image.open(image_dir)
+    if 'png' in image_dir.lower():
+        img = img.convert('LA')
+    
+    line = img.copy()
+
+    # Load pixel-level semantic segmentation predictions
+    segmentation_map = torch.load('./result/segmentation_map.pt')
+    segmentation_map = torch.squeeze(segmentation_map).transpose(0, 1)
+    assert segmentation_map.shape == img.size
+
+    # Resize
+    width = float(img.size[0])
+    height = float(img.size[1])
+
+    if width > height:
+        rate = width / height
+        new_height = 512
+        new_width = int(512 * rate)
+    else:
+        rate = height / width
+        new_width = 512
+        new_height = int(rate * 512)
+
+    print(f"Resize: ({width}, {height}) -> ({new_width}, {new_height})")
+    img = img.resize((new_width, new_height), Image.BICUBIC)
+
+    x = int(input("Coordinate x: "))
+    y = int(input("Coordinate y: "))
+    # TODO: define color
+    color = (255, 0, 0)
+    width = 4
+
+    # Construct a hint_map of translucent canvas, add the color points
+    hint_map = Image.new("RGBA", (new_width, new_height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(hint_map)
+    draw.line([(x, y), (x + width, y)], fill=color, width=width)
+    hint_map.show()
+    
+    # Colorization with model
+    img = predict(img, hint_map, inference_handler)
+    img.show()

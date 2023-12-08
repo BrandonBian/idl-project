@@ -227,3 +227,9 @@ class InferenceHandler:
         pred = self.convert_to_pil_image(pred)
         image = self.resize(pred, size)
         return image
+    
+def predict(line: Image.Image, hint: Image.Image, inference_handler):
+    line, line_draft, hint, size = inference_handler.prepare(line, hint)
+    pred = inference_handler.inference((line, line_draft, hint))
+    image = inference_handler.postprocess((pred, size))
+    return image
