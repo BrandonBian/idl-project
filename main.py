@@ -278,13 +278,16 @@ if __name__ == "__main__":
                     # NOTE: not used for now
                     scaled_stroke = max(3, int(stroke_size * (1 - (len(coords) / max_area))))
 
-                    # Randomly select [scaled_points] coordinates
-                    if coords.shape[0] > scaled_points:
-                        indices = np.random.choice(coords.shape[0], scaled_points, replace=False)
-                    else:
-                        indices = np.random.choice(coords.shape[0], scaled_points, replace=True)  # Allow repeats if less than 5
+                    try:
+                        # Randomly select [scaled_points] coordinates
+                        if coords.shape[0] > scaled_points:
+                            indices = np.random.choice(coords.shape[0], scaled_points, replace=False)
+                        else:
+                            indices = np.random.choice(coords.shape[0], scaled_points, replace=True)  # Allow repeats if less than 5
 
-                    selected_coordinates[label] = coords[indices]
+                        selected_coordinates[label] = coords[indices]
+                    except:
+                        pass
                 
                 for label, coordinates in selected_coordinates.items():
                     for x, y in coordinates:
