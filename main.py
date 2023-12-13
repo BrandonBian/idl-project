@@ -120,7 +120,7 @@ def transform_color_rgb(color):
 
 if __name__ == "__main__":
     # OpenAI API
-    OPENAI_SECRET_KEY = "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"
+    OPENAI_SECRET_KEY = "input_your_own_key"
     openai.api_key = OPENAI_SECRET_KEY
     MODEL_NAME = "text-davinci-002" #"davinci"
     engine = OpenAIEngine(MODEL_NAME)
